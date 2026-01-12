@@ -1,41 +1,31 @@
-import "./env.js";
-
 import express from "express";
+import dotenv from "dotenv";
+import passport from "./config/passport.js";
+import authRoutes from "./routes/auth.route.js";
+import profileRoutes from "./routes/profile.route.js";
 import cors from "cors";
-import passport from "passport";
-import "./config/passport.js";
+import cookieParser from "cookie-parser";
+
+dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,    //this is required for cookies
+}));
+
+app.use(cookieParser());    //enable cookies
 app.use(passport.initialize());
 
-app.get("/", (req, res) => {
-  res.send("Server running");
-});
+// Public routes
+app.use("/auth", authRoutes);
 
-app.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
-);
+// Protected route
+app.use("/api/profile", profileRoutes);
 
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    session: false,
-  }),
-  (req, res) => {
-    res.json({
-      success: true,
-      user: req.user,
-    });
-  }
-);
+app.get("/", (req, res) => res.send("Backend is running"));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on http://localhost:${process.env.PORT}`);
 });

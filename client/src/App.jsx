@@ -1,16 +1,20 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Success from "./pages/Success";
-import Dashboard from "./pages/Dashboard";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import "./index.css";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
+      <Navbar />
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Login />} />
-        <Route path="/login/success" element={<Success />} />
 
+        {/* Protected route */}
         <Route
           path="/dashboard"
           element={
@@ -20,7 +24,7 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
