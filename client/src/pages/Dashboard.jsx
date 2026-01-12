@@ -11,7 +11,7 @@ const Dashboard = () => {
     })
       .then((res) => {
         if (res.status === 401) {
-          navigate("/");
+          navigate("/", { replace: true });
           return;
         }
         return res.json();
@@ -21,8 +21,18 @@ const Dashboard = () => {
           setProfile(data.user);
         }
       })
-      .catch((err) => console.error(err));
+      .catch(() => navigate("/", { replace: true }));
   }, [navigate]);
+
+  // REAL LOGOUT
+  const handleLogout = async () => {
+    await fetch("http://localhost:5050/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    navigate("/", { replace: true }); // prevents back button
+  };
 
   if (!profile) {
     return (
@@ -38,8 +48,10 @@ const Dashboard = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
+
+            {/* FIXED SIGN OUT */}
             <button
-              onClick={() => navigate("/")}
+              onClick={handleLogout}
               className="text-sm text-gray-600 hover:text-gray-900"
             >
               Sign out
@@ -54,7 +66,9 @@ const Dashboard = () => {
                 </span>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">{profile.name}</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {profile.name}
+                </p>
                 <p className="text-sm text-gray-600">{profile.email}</p>
               </div>
             </div>

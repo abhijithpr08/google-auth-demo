@@ -3,7 +3,7 @@ import passport from "passport";
 
 const router = express.Router();
 
-// 1️⃣ Start Google OAuth login
+// Start Google OAuth login
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -19,10 +19,12 @@ router.get(
     // SET JWT IN COOKIE
     res.cookie("token", req.user.token, {
       httpOnly: true,
-      secure: false,        // true in production (HTTPS)
-      sameSite: "lax",
-      maxAge: 60 * 60 * 1000, // 1 hour
+      secure: false,        // localhost
+      sameSite: "none",     // REQUIRED
+      path: "/",
+      maxAge: 60 * 60 * 1000,
     });
+
 
     // REDIRECT DIRECTLY TO DASHBOARD
     res.redirect("http://localhost:5173/dashboard");
@@ -33,10 +35,14 @@ router.get(
 router.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
+    secure: false,
+    sameSite: "none",
+    path: "/",
   });
-  res.json({ message: "Logged out" });
+
+  res.status(200).json({ message: "Logged out" });
 });
+
 
 
 export default router;
