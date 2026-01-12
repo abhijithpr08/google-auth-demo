@@ -1,6 +1,9 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 passport.use(
   new GoogleStrategy(
@@ -11,7 +14,7 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       const user = {
-        id: profile.id,
+        googleId: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value,
       };
