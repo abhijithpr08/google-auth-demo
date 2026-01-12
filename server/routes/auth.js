@@ -22,7 +22,7 @@ router.get(
     const token = req.user.token;
 
     res.redirect(
-      `http://localhost:3000/login/success?token=${token}`
+      `http://localhost:5174/login/success?token=${token}`
     );
   }
 );
